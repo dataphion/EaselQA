@@ -10,24 +10,11 @@ services:
       # HTTP management UI
       - "15672:15672"
     restart: always
-    healthcheck:
-      test: ["CMD", "curl", "-f", "http://localhost:15672"]
-      interval: 30s
-      timeout: 10s
-      retries: 5
 
   strapi:
-    build:
-      context: .
-      args:
-        - HOST=http://localhost:1337/
-        - API_EXEC_HOST=http://localhost:4200/api/Runtest
-        - SOCKET_HOST=http://localhost:1337
-        - IMAGE_HOST=http://localhost:4200
-        - ERROR_IMAGE_HOST=http://localhost:4200
-        - DEBUG=1
-    command: "sh startup.sh"
+    image: dataphion/easelqa-application
     restart: always
+    command: "sh startup.sh"
     environment:
       - RMQ_HOST=amqp://rabbitmq
       - RMQ_QUEUE_NAME=highlight_queue
@@ -38,16 +25,18 @@ services:
       - DATABASE_PASSWORD=postgres
       - STRAPI_HOST=http://localhost:1337
       - DATABASE_SSL=false
-      - VISION_API_HOST=http://matching_service:9502
-      # - PROTRACTOR_HOST=
+      - VISION_API_HOST=http://matching_service:9502/vision/api
+      - API_HOST=http://matching_service:9502/vision/api
       - PROTRACTOR_PATH=/usr/local/bin/protractor
-      - EXECUTOR_PATH=/srv/executor
+      - EXECUTOR_PATH=/srv
+      - IMG_PATH=/srv/executor/image.png
+      - ERR_IMG_PATH=/srv/executor/error_view.png
     volumes:
       - ./APIService:/srv/api
-      - "./images:/opt/images"
+      - ./images:/opt/images
     ports:
       - "1337:1337"
-      - "4200:80"
+      - 4200:80
     depends_on:
       - db
       - rabbitmq
@@ -65,22 +54,25 @@ services:
       - aitester-postgres-db:/var/lib/postgresql/data
 
   matching_service:
-    build: ./ElementLocators
+    image: dataphion/easelqa-matching-service
     environment:
       - RMQ_HOST=rabbitmq
       - RMQ_PORT=5672
       - SOCKET_HOST=http://strapi:1337
       - HOST=http://strapi:1337
+      - IMAGE_HOST=http://strapi
+      - GET_ATTR_FILE=/opt/services/getAttribute.txt
     ports:
       - 9502:9502
     restart: always
     volumes:
-      - "./images:/opt/images"
+      - ./images:/opt/images
     depends_on:
       - rabbitmq
       - strapi
+      
   decider:
-    build: ./ElementLocators/api_services
+    image: dataphion/easelqa-flow-executor
     environment:
       - RMQ_HOST=rabbitmq
       - RMQ_PORT=5672
@@ -97,4 +89,3 @@ networks:
   # Declare our private network.  We must declare one for the magic
   # Docker DNS to work, but otherwise its default settings are fine.
   network: {}
-

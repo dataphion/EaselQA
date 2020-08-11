@@ -40,7 +40,6 @@ RUN mkdir -p /opt/images
 WORKDIR /opt
 RUN ln -s /opt/images/ p_images
 
-
 RUN mkdir /srv/api && chown 1000:1000 -R /srv/api
 WORKDIR /srv/api
 VOLUME /srv/api
@@ -49,7 +48,7 @@ COPY ./APIService/docker-entrypoint.sh /usr/local/bin/
 RUN ["chmod", "+x", "/usr/local/bin/docker-entrypoint.sh"]
 
 
-# frontend
+# Portal
 RUN \
     apt-get update && \
     apt-get install -y nginx && \
@@ -65,5 +64,7 @@ ENV NODE_ENV production
 EXPOSE 80
 EXPOSE 443
 EXPOSE 1337
-ENTRYPOINT ["docker-entrypoint.sh"]
+
+ENTRYPOINT [ "docker-entrypoint.sh" ]
+
 CMD ["startup.sh"]
