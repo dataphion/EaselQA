@@ -19,4 +19,4 @@ Open Source, Codeless, End to End Test automation framework developed by Dataphi
   4. Image processing service.
   5. API and DB services.
 
-[View Documentation](https://documentation.aitester.com)
+[View Documentation](https://documentation.easelqa.com)
