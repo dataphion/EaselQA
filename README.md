@@ -1,7 +1,7 @@
 # EaselQA
 EaselQA is an Open Source, Codeless, End to End Test automation framework developed by Dataphion. Please visit [EaselQA](https://easelqa.com) for more details. Application is still in Beta phase. Please share your feedback at support@dataphion.com
 
-# Get Started
+  ### Getting Started
   Application can be installed with a single command using docker-compose.
   ### Pre-Requisite
   - Docker and docker-compose must be installed.
@@ -31,3 +31,5 @@ EaselQA is an Open Source, Codeless, End to End Test automation framework develo
   - Download the Chrome Plugin from [Here](https://drive.google.com/file/d/1raxN9eEOdTCmGn7lnPi8JMfmWmQnkSxH/view?usp=sharing) and extract the file(This will create a folder 'build'). Will be available in official Chrome Store shortly.
   - In chrome browser enter chrome://extensions in the address bar, Click on 'Load Unpacked' button and point it to the build folder.
   - Once the extension is installed, please enter the application URL and registered credentials. You're all set to record your first testcase.
+
+  ### Instructions for API testing and Mobile application testing can be found in the detailed documentation.
