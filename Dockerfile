@@ -42,7 +42,8 @@ RUN ln -s /opt/images/ p_images
 
 RUN mkdir /srv/api && chown 1000:1000 -R /srv/api
 WORKDIR /srv/api
-VOLUME /srv/api
+# VOLUME /srv/api
+COPY ./APIService .
 
 COPY ./APIService/docker-entrypoint.sh /usr/local/bin/
 RUN ["chmod", "+x", "/usr/local/bin/docker-entrypoint.sh"]
