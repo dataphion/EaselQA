@@ -1,0 +1,100 @@
+version: "3.7" # requires Docker Compose 1.13 or later
+
+services:
+  rabbitmq:
+    image: "rabbitmq"
+    container_name: rabbitmq
+    ports:
+      # The standard AMQP protocol port
+      - "5672:5672"
+      # HTTP management UI
+      - "15672:15672"
+    restart: always
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:15672"]
+      interval: 30s
+      timeout: 10s
+      retries: 5
+
+  strapi:
+    build:
+      context: .
+      args:
+        - HOST=http://localhost:1337/
+        - API_EXEC_HOST=http://localhost:4200/api/Runtest
+        - SOCKET_HOST=http://localhost:1337
+        - IMAGE_HOST=http://localhost:4200
+        - ERROR_IMAGE_HOST=http://localhost:4200
+        - DEBUG=1
+    command: "sh startup.sh"
+    restart: always
+    environment:
+      - RMQ_HOST=amqp://rabbitmq
+      - RMQ_QUEUE_NAME=highlight_queue
+      - DATABASE_HOST=db
+      - DATABASE_PORT=5432
+      - DATABASE_NAME=aitester
+      - DATABASE_USERNAME=postgres
+      - DATABASE_PASSWORD=postgres
+      - STRAPI_HOST=http://localhost:1337
+      - DATABASE_SSL=false
+      - VISION_API_HOST=http://matching_service:9502
+      # - PROTRACTOR_HOST=
+      - PROTRACTOR_PATH=/usr/local/bin/protractor
+      - EXECUTOR_PATH=/srv/executor
+    volumes:
+      - ./APIService:/srv/api
+      - "./images:/opt/images"
+    ports:
+      - "1337:1337"
+      - "4200:80"
+    depends_on:
+      - db
+      - rabbitmq
+
+  db:
+    image: postgres
+    restart: always
+    environment:
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=postgres
+      - POSTGRES_DB=aitester
+    ports:
+      - "5432:5432"
+    volumes:
+      - aitester-postgres-db:/var/lib/postgresql/data
+
+  matching_service:
+    build: ./ElementLocators
+    environment:
+      - RMQ_HOST=rabbitmq
+      - RMQ_PORT=5672
+      - SOCKET_HOST=http://strapi:1337
+      - HOST=http://strapi:1337
+    ports:
+      - 9502:9502
+    restart: always
+    volumes:
+      - "./images:/opt/images"
+    depends_on:
+      - rabbitmq
+      - strapi
+  decider:
+    build: ./ElementLocators/api_services
+    environment:
+      - RMQ_HOST=rabbitmq
+      - RMQ_PORT=5672
+      - SOCKET_HOST=http://strapi:1337
+      - HOST=http://strapi:1337
+    restart: always
+    depends_on:
+      - rabbitmq
+      - strapi
+volumes:
+  aitester-postgres-db:
+
+networks:
+  # Declare our private network.  We must declare one for the magic
+  # Docker DNS to work, but otherwise its default settings are fine.
+  network: {}
+
