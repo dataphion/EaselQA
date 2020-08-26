@@ -32,7 +32,6 @@ services:
       - IMG_PATH=/srv/executor/image.png
       - ERR_IMG_PATH=/srv/executor/error_view.png
     volumes:
-      - ./APIService:/srv/api
       - ./images:/opt/images
     ports:
       - "1337:1337"
