@@ -13,6 +13,8 @@ services:
 
   strapi:
     image: dataphion/easelqa-application
+    #image: application
+    #build: .
     restart: always
     command: "sh startup.sh"
     environment:
@@ -32,7 +34,6 @@ services:
       - IMG_PATH=/srv/executor/image.png
       - ERR_IMG_PATH=/srv/executor/error_view.png
     volumes:
-      - ./APIService:/srv/api
       - ./images:/opt/images
     ports:
       - "1337:1337"
@@ -54,7 +55,8 @@ services:
       - aitester-postgres-db:/var/lib/postgresql/data
 
   matching_service:
-    image: dataphion/easelqa-matching-service
+    image: dataphion/easelqa-matching-service:1.0.1
+    #build: 
     environment:
       - RMQ_HOST=rabbitmq
       - RMQ_PORT=5672
@@ -72,7 +74,8 @@ services:
       - strapi
       
   decider:
-    image: dataphion/easelqa-flow-executor
+    image: dataphion/easelqa-flow-executor:1.0.1
+    #build: 
     environment:
       - RMQ_HOST=rabbitmq
       - RMQ_PORT=5672
