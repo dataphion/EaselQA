@@ -1,5 +1,5 @@
 # EaselQA
-EaselQA is an Open Source, Codeless, End to End Test automation framework developed by Dataphion. Please visit [EaselQA](https://easelqa.com) for more details. Application is still in Beta phase. Please share your feedback at support@dataphion.com
+EaselQA is an Open Source, Codeless, End to End Test automation framework developed by Dataphion. Please visit [EaselQA](https://easelqa.com) for more details. Application is still in Beta phase, contributions are welcome. Please share your feedback at support@dataphion.com.
 
   ### Getting Started
   Application can be installed with a single command using docker-compose.
