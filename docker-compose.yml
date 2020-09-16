@@ -12,9 +12,7 @@ services:
     restart: always
 
   strapi:
-      image: dataphion/easelqa-application:1.0.2
-    #image: application
-    #build: .
+    image: dataphion/easelqa-application:1.0.2
     restart: always
     command: "sh startup.sh"
     environment:
