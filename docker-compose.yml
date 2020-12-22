@@ -12,7 +12,7 @@ services:
     restart: always
 
   strapi:
-    image: dataphion/easelqa-application:1.0.3
+    image: dataphion/easelqa-application:1.0.5
     restart: always
     command: "sh startup.sh"
     environment:
@@ -53,7 +53,7 @@ services:
       - aitester-postgres-db:/var/lib/postgresql/data
 
   matching_service:
-    image: dataphion/easelqa-matching-service:1.0.3
+    image: dataphion/easelqa-matching-service:1.0.5
     #build: 
     environment:
       - RMQ_HOST=rabbitmq
@@ -72,7 +72,7 @@ services:
       - strapi
       
   decider:
-    image: dataphion/easelqa-flow-executor:1.0.3
+    image: dataphion/easelqa-flow-executor:1.0.5
     #build: 
     environment:
       - RMQ_HOST=rabbitmq
